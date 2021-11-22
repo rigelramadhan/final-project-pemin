@@ -18,23 +18,15 @@ $router->get('/', function () use ($router) {
 });
 
 $router->group(['prefix' => 'auth'], function () use ($router) {
-    $router->post('/register', function () {
-        // TODO: Routes this to the right controller
-    });
+    $router->post('/register', ['uses' => 'AuthController@register']); // belum
 
-    $router->post('/login', function () {
-        // TODO: Routes this to the right controller
-    });
+    $router->post('/login', ['uses' => 'AuthController@login']); // belum
 });
 
 $router->group(['prefix' => 'books'], function () use ($router) {
-    $router->get('/', function () {
-        // TODO: Routes this to the right controller
-    });
+    $router->get('/', ['uses' => 'BookController@getBooks']); // belum
 
-    $router->get('/{bookId}', function () {
-        // TODO: Routes this to the right controller
-    });
+    $router->get('/{bookId}', ['uses' => 'BookController@getBookById']); // belum
 });
 
 $router->group(['middleware' => 'auth'], function () use ($router) {
