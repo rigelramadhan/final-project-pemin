@@ -31,9 +31,9 @@ $router->group(['prefix' => 'books'], function () use ($router) {
 
 $router->group(['middleware' => 'userAuth'], function () use ($router) {
     $router->group(['prefix' => 'users'], function () use ($router) {
-        $router->get('/{userId}', ['uses' => 'UserController@getUserById']);
+        $router->get('/{userId}', ['uses' => 'UserController@getUserById']); // SUDAH
 
-        $router->put('/{userId}', ['uses' => 'UserController@updateUser']);
+        $router->put('/{userId}', ['uses' => 'UserController@updateUser']); // SUDAH
 
         $router->delete('/{userId}', ['uses' => 'UserController@deleteUser']);
     });
