@@ -35,7 +35,7 @@ $router->group(['middleware' => 'userAuth'], function () use ($router) {
 
         $router->put('/{userId}', ['uses' => 'UserController@updateUser']); // SUDAH
 
-        $router->delete('/{userId}', ['uses' => 'UserController@deleteUser']);
+        $router->delete('/{userId}', ['uses' => 'UserController@deleteUser']); // HAMPIR SUDAH
     });
 
     $router->group(['prefix' => 'transactions'], function () use ($router) {

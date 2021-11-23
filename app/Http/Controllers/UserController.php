@@ -24,7 +24,7 @@ class UserController extends Controller
         if ($user) {
             return response()->json([
                 'success' => true,
-                'message' => "User has been registered.",
+                'message' => "User found.",
                 'data' => [
                     'user' => [
                         'id' => $user->id,
@@ -35,7 +35,7 @@ class UserController extends Controller
             ], 200);
         } else {
             return response()->json([
-                'success' => false  ,
+                'success' => false,
                 'message' => 'User not found'
             ], 404);
         }
@@ -52,7 +52,7 @@ class UserController extends Controller
         if ($data) {
             return response()->json([
                 'success' => true,
-                'message' => "User has been registered.",
+                'message' => "User has been updated.",
                 'data' => [
                     'user' => [
                         'name' => $request->input('name'), 
@@ -63,13 +63,33 @@ class UserController extends Controller
             ], 200);
         } else {
             return response()->json([
-                'success' => false  ,
+                'success' => false,
                 'message' => 'User not found'
             ], 404);
         }
     }
 
     public function deleteUser($userId) {
+        $user = User::find($userId);
 
+        if ($user->role == 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Access denied.'
+            ], 401);
+        }
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        $user->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'User has been deleted'
+        ], 200);
     }
 }
