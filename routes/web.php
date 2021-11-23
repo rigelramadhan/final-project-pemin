@@ -18,30 +18,24 @@ $router->get('/', function () use ($router) {
 });
 
 $router->group(['prefix' => 'auth'], function () use ($router) {
-    $router->post('/register', ['uses' => 'AuthController@register']); // belum
+    $router->post('/register', ['uses' => 'AuthController@register']); // SUDAH
 
-    $router->post('/login', ['uses' => 'AuthController@login']); // belum
+    $router->post('/login', ['uses' => 'AuthController@login']); // SUDAH
 });
 
 $router->group(['prefix' => 'books'], function () use ($router) {
-    $router->get('/', ['uses' => 'BookController@getBooks']); // belum
+    $router->get('/', ['uses' => 'BookController@getBooks']); // TODO: Implementasiin getBooks()
 
-    $router->get('/{bookId}', ['uses' => 'BookController@getBookById']); // belum
+    $router->get('/{bookId}', ['uses' => 'BookController@getBookById']); // TODO: Implementasiin getBookById($bookId)
 });
 
-$router->group(['middleware' => 'auth'], function () use ($router) {
+$router->group(['middleware' => 'userAuth'], function () use ($router) {
     $router->group(['prefix' => 'users'], function () use ($router) {
-        $router->get('/{userId}', function () {
-            // TODO: Routes this to the right controller
-        });
+        $router->get('/{userId}', ['uses' => 'UserController@getUserById']);
 
-        $router->put('/{userId}', function () {
-            // TODO: Routes this to the right controller
-        });
+        $router->put('/{userId}', ['uses' => 'UserController@updateUser']);
 
-        $router->delete('/{userId}', function () {
-            // TODO: Routes this to the right controller
-        });
+        $router->delete('/{userId}', ['uses' => 'UserController@deleteUser']);
     });
 
     $router->group(['prefix' => 'transactions'], function () use ($router) {

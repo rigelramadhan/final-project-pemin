@@ -112,7 +112,7 @@ class AuthController extends Controller
                         "name" => $user->name,
                         "iat" => time()
                     ],
-                    "Secret"
+                    "SECRET"
                 );
 
                 $user->token = $token;
