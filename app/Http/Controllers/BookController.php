@@ -14,5 +14,11 @@ class BookController extends Controller
         //
     }
 
-    // TODO: Create book logic
+    public function getBooks() {
+        // TODO: Lengkapin getBooks
+    }
+
+    public function getBookById($bookId) {
+        // TODO: Lengkapin getBookById
+    }
 }
