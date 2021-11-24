@@ -49,15 +49,17 @@ class UserController extends Controller
             'password' => $password
         ]);
 
+        $user = User::where('id', $userId)->first();
+
         if ($data) {
             return response()->json([
                 'success' => true,
                 'message' => "User has been updated.",
                 'data' => [
                     'user' => [
-                        'name' => $request->input('name'), 
-                        'email' => $request->input('email'),
-                        'password' => $password
+                        'name' => $user->name, 
+                        'email' => $user->email,
+                        'password' => $user->password
                     ]
                 ]
             ], 200);
