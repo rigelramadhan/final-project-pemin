@@ -17,6 +17,25 @@ class BookController extends Controller
         //
     }
 
+    public function createBook(Request $request){
+        $data = Book::create($request->all());
+        return response()->json([
+            'success'=>true,
+            'message'=>'response search book',
+            'data' => [
+                'book' => [
+                        'id'=>$data->id,
+                        'title'=>$data->data,
+                        'description'=>$data->description,
+                        'author'=>$data->author,
+                        'year'=>$data->year,
+                        'synopsis'=>$data->sysnopsis,
+                        'stock'=>$data->stock,
+                ],
+            ],
+        ],200);
+    }
+
     public function getBooks() {
         // TODO: Lengkapin getBooks
         $book = Book::all();
