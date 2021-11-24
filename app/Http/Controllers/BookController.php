@@ -88,4 +88,38 @@ class BookController extends Controller
               ], 400);
         }  
     }
+
+    public function updateBook(Request $request, $id){
+        $data= Book::where('id',$id)->update([
+            'id'=>$data->id,
+            'title'=>$data->data,
+            'description'=>$data->description,
+            'author'=>$data->author,
+            'year'=>$data->year,
+            'synopsis'=>$data->sysnopsis,
+            'stock'=>$data->stock,
+        ]);
+        return response()->json([
+            'success'=>true,
+            'message'=>'response update book',
+            'data' => [
+                'book' => [
+                        'id'=>$data->id,
+                        'title'=>$data->data,
+                        'description'=>$data->description,
+                        'author'=>$data->author,
+                        'year'=>$data->year,
+                        'synopsis'=>$data->sysnopsis,
+                        'stock'=>$data->stock,
+                ],
+            ],
+        ],200);    
+    }
+
+    public function deleteBook($id){
+        $data=Book::find($id)->delete();
+        return response()->json(['success'=>true,
+        'message'=>'response delete book',
+        ],200);
+    }
 }
