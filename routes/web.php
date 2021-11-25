@@ -24,9 +24,9 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
 });
 
 $router->group(['prefix' => 'books'], function () use ($router) {
-    $router->get('/', ['uses' => 'BookController@getBooks']); // TODO: Implementasiin getBooks()
+    $router->get('/', ['uses' => 'BookController@getBooks']); // SUDAH
 
-    $router->get('/{bookId}', ['uses' => 'BookController@getBookById']); // TODO: Implementasiin getBookById($bookId)
+    $router->get('/{bookId}', ['uses' => 'BookController@getBookById']); // SUDAH
 });
 
 $router->group(['middleware' => 'userAuth'], function () use ($router) {
@@ -39,13 +39,9 @@ $router->group(['middleware' => 'userAuth'], function () use ($router) {
     });
 
     $router->group(['prefix' => 'transactions'], function () use ($router) {
-        $router->get('/', function () {
-            // TODO: Routes this to the right controller
-        });
+        $router->get('/', ['uses' => 'TransactionController@getTransaction']); //BELUM LENGKAP
 
-        $router->get('/{transactionId}', function () {
-            // TODO: Routes this to the right controller
-        });
+        $router->get('/{transactionId}', ['uses' => 'TransactionController@getTransactionById']); //SUDAH
     });
 });
 
@@ -57,30 +53,20 @@ $router->group(['middleware' => 'auth:admin'], function () use ($router) {
     });
 
     $router->group(['prefix' => 'books'], function () use ($router) {
-        $router->post('/', function () {
-            // TODO: Routes this to the right controller
-        });
+        $router->post('/', ['uses' => 'BookController@createBook']); //BELUM LENGKAP
 
-        $router->put('/{bookId}', function () {
-            // TODO: Routes this to the right controller
-        });
+        $router->put('/{bookId}', ['uses' => 'BookController@updateBook']); //BELUM LENGKAP
 
-        $router->delete('/{bookId}', function () {
-            // TODO: Routes this to the right controller
-        });
+        $router->delete('/{bookId}', ['uses' => 'BookController@deleteBook']); //BELUM LENGKAP
     });
 
     $router->group(['prefix' => 'transactions'], function () use ($router) {
-        $router->put('/{transactionId}', function () {
-            // TODO: Routes this to the right controller
-        });
+        $router->put('/{transactionId}', ['uses' => 'TransactionController@updateTransaction']); //SUDAH
     });
 });
 
 $router->group(['middleware' => 'auth:user'], function () use ($router) {
     $router->group(['prefix' => 'transactions'], function () use ($router) {
-        $router->post('/', function () {
-            // TODO: Routes this to the right controller
-        });
+        $router->post('/', ['uses' => 'TransactionController@createTransaction']); //BELUM LENGKAP
     });
 });
