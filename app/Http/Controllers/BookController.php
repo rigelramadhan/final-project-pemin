@@ -137,7 +137,7 @@ class BookController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'A book not found'
-              ], 400);
+              ], 404);
         }
     }
 }
