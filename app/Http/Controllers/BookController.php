@@ -99,27 +99,43 @@ class BookController extends Controller
             'synopsis'=>$data->sysnopsis,
             'stock'=>$data->stock,
         ]);
-        return response()->json([
-            'success'=>true,
-            'message'=>'response update book',
-            'data' => [
-                'book' => [
-                        'id'=>$data->id,
-                        'title'=>$data->data,
-                        'description'=>$data->description,
-                        'author'=>$data->author,
-                        'year'=>$data->year,
-                        'synopsis'=>$data->sysnopsis,
-                        'stock'=>$data->stock,
+        if($data){
+            return response()->json([
+                'success'=>true,
+                'message'=>'Book has been updated',
+                'data' => [
+                    'book' => [
+                            'id'=>$data->id,
+                            'title'=>$data->data,
+                            'description'=>$data->description,
+                            'author'=>$data->author,
+                            'year'=>$data->year,
+                            'synopsis'=>$data->sysnopsis,
+                            'stock'=>$data->stock,
+                    ],
                 ],
-            ],
-        ],200);    
+            ],200);
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => 'A book not found'
+              ], 400);
+        }
     }
 
     public function deleteBook($id){
-        $data=Book::find($id)->delete();
-        return response()->json(['success'=>true,
-        'message'=>'response delete book',
-        ],200);
+        $data=Book::find($id);
+        if($data){
+            $data->delete();
+            return response()->json([
+                'success'=>true,
+                'message'=>'Book has been deleted',
+            ],200);
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => 'A book not found'
+              ], 400);
+        }
     }
 }
