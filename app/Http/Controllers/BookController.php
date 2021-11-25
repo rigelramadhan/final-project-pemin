@@ -18,6 +18,7 @@ class BookController extends Controller
     }
 
     public function createBook(Request $request){
+        // belum lengkap
         $data = Book::create($request->all());
         return response()->json([
             'success'=>true,
@@ -25,7 +26,7 @@ class BookController extends Controller
             'data' => [
                 'book' => [
                         'id'=>$data->id,
-                        'title'=>$data->data,
+                        'title'=>$data->title,
                         'description'=>$data->description,
                         'author'=>$data->author,
                         'year'=>$data->year,
@@ -37,7 +38,7 @@ class BookController extends Controller
     }
 
     public function getBooks() {
-        // TODO: Lengkapin getBooks
+        // belum lengkap
         $book = Book::all();
         if ($book->isEmpty()) {
             return response()->json([
@@ -63,7 +64,7 @@ class BookController extends Controller
     }
 
     public function getBookById($bookId) {
-        // TODO: Lengkapin getBookById
+        // belum lengkap
         $book = Book::find($bookId);
 
         if($book){
@@ -90,9 +91,10 @@ class BookController extends Controller
     }
 
     public function updateBook(Request $request, $id){
+        // belum lengkap
         $data= Book::where('id',$id)->update([
             'id'=>$data->id,
-            'title'=>$data->data,
+            'title'=>$data->title,
             'description'=>$data->description,
             'author'=>$data->author,
             'year'=>$data->year,
@@ -106,7 +108,7 @@ class BookController extends Controller
                 'data' => [
                     'book' => [
                             'id'=>$data->id,
-                            'title'=>$data->data,
+                            'title'=>$data->title,
                             'description'=>$data->description,
                             'author'=>$data->author,
                             'year'=>$data->year,
@@ -124,6 +126,7 @@ class BookController extends Controller
     }
 
     public function deleteBook($id){
+        // belum lengkap
         $data=Book::find($id);
         if($data){
             $data->delete();
