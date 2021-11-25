@@ -86,20 +86,19 @@ class BookController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'A book not found'
-              ], 400);
+              ], 404);
         }  
     }
 
     public function updateBook(Request $request, $id){
         // belum lengkap
         $data= Book::where('id',$id)->update([
-            'id'=>$data->id,
-            'title'=>$data->title,
-            'description'=>$data->description,
-            'author'=>$data->author,
-            'year'=>$data->year,
-            'synopsis'=>$data->sysnopsis,
-            'stock'=>$data->stock,
+            'title'=>$request->input('title'),
+            'description'=>$request->input('description'),
+            'author'=>$request->input('author'),
+            'year'=>$request->input('year'),
+            'synopsis'=>$request->input('synopsis'),
+            'stock'=>$request->input('stock'),
         ]);
         if($data){
             return response()->json([
@@ -121,7 +120,7 @@ class BookController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'A book not found'
-              ], 400);
+              ], 404);
         }
     }
 
