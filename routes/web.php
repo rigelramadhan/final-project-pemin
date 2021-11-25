@@ -47,9 +47,7 @@ $router->group(['middleware' => 'userAuth'], function () use ($router) {
 
 $router->group(['middleware' => 'auth:admin'], function () use ($router) {
     $router->group(['prefix' => 'users'], function () use ($router) {
-        $router->get('/', function () {
-            // TODO: Routes this to the right controller
-        });
+        $router->get('/', ['uses' => 'UserController@getUser']); 
     });
 
     $router->group(['prefix' => 'books'], function () use ($router) {
