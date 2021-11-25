@@ -18,6 +18,30 @@ class UserController extends Controller
         //
     }
 
+    public function getUser(Request $request){
+        $user = User::all();
+
+        if ($user){
+            return response()->json([
+                'succes' => true,
+                'message'=> "All Users available",
+                'data' => [
+                    'user' => [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'email' => $user->email
+                    ]
+                ]
+            ], 200);
+        }
+        else{
+            return response()->json([
+                'succes' => false,
+                'message'=> "User not available"
+            ], 404);
+        }
+    }
+
     public function getUserById($userId) {
         $user = User::where('id', $userId)->first();
         
