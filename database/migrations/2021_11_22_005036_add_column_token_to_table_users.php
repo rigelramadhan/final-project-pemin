@@ -14,7 +14,7 @@ class AddColumnTokenToTableUsers extends Migration
     public function up()
     {
             Schema::table('users', function (Blueprint $table) {
-                    $table->string('token', 72)->unique()->nullable();
+                    $table->string('token', 255)->unique()->nullable();
             });
     }
 
