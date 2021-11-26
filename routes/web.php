@@ -29,7 +29,7 @@ $router->group(['prefix' => 'books'], function () use ($router) {
     $router->get('/{bookId}', ['uses' => 'BookController@getBookById']); // SUDAH
 });
 
-$router->group(['middleware' => 'userAuth'], function () use ($router) {
+$router->group(['middleware' => 'auth'], function () use ($router) {
     $router->group(['prefix' => 'users'], function () use ($router) {
         $router->get('/{userId}', ['uses' => 'UserController@getUserById']); // SUDAH
 
@@ -45,7 +45,7 @@ $router->group(['middleware' => 'userAuth'], function () use ($router) {
     });
 });
 
-$router->group(['middleware' => 'adminAuth'], function () use ($router) {
+$router->group(['middleware' => ['auth', 'adminAuth']], function () use ($router) {
     $router->group(['prefix' => 'users'], function () use ($router) {
         $router->get('/', ['uses' => 'UserController@getUsers']); 
     });
@@ -63,7 +63,7 @@ $router->group(['middleware' => 'adminAuth'], function () use ($router) {
     });
 });
 
-$router->group(['middleware' => 'auth:user'], function () use ($router) {
+$router->group(['middleware' => ['auth', 'userAuth']], function () use ($router) {
     $router->group(['prefix' => 'transactions'], function () use ($router) {
         $router->post('/', ['uses' => 'TransactionController@createTransaction']); //BELUM LENGKAP
     });

@@ -18,7 +18,7 @@ class UserController extends Controller
         //
     }
 
-    public function getUsers(Request $request){
+    public function getUsers(){
         $users = User::all();
 
         if ($users){
@@ -34,21 +34,28 @@ class UserController extends Controller
             return response()->json([
                 'succes' => false,
                 'message'=> "User not available"
-            ], 404);
+            ], 200);
         }
     }
 
-    public function getUserById($userId) {
+    public function getUserById(Request $request, $userId) {
         $user = User::where('id', $userId)->first();
-        
+
         if ($user) {
-            return response()->json([
-                'success' => true,
-                'message' => "User found.",
-                'data' => [
-                    'user' => $user
-                ]
-            ], 200);
+            if ($request->user->role == 'admin' || $request->user->email == $user->email) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "User found.",
+                    'data' => [
+                        'user' => $user
+                    ]
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false  ,
+                    'message' => 'Unauthorized access.'
+                ], 403);
+            }
         } else {
             return response()->json([
                 'success' => false,
@@ -94,7 +101,7 @@ class UserController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Access denied.'
-            ], 401);
+            ], 403);
         }
 
         if (!$user) {
