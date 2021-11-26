@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\JWTProvider;
 use App\Models\User;
 use Firebase\JWT\JWT;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -52,7 +53,7 @@ class AuthController extends Controller
         ]);
 
         if ($register) {
-            $token = $this->jwt(
+            $token = JWTProvider::jwt(
                 [
                     "alg" => "HS256",
                     "typ" => "JWT"
@@ -102,7 +103,7 @@ class AuthController extends Controller
 
         if ($user) {
             if (Hash::check($password, $user->password)) {
-                $token = $this->jwt(
+                $token = JWTProvider::jwt(
                     [
                         "alg" => "HS256",
                         "typ" => "JWT"
@@ -135,32 +136,5 @@ class AuthController extends Controller
                 'message' => 'User not found.'
             ], 404);
         }
-    }
-
-    private function base64url_encode($data): string {
-        $base64 = base64_encode($data);
-        $base64url = strtr($base64, '+/', '-_');
-
-        return rtrim($base64url, '=');
-    }
-
-    private function sign(string $header_base64url, string $payload_base64url, string $secret): string {
-        $signature = hash_hmac('sha256', "{$header_base64url}.{$payload_base64url}", $secret, true);
-        $signature_base64url = $this->base64url_encode($signature);
-
-        return $signature_base64url;
-    }
-
-    private function jwt(array $header, array $payload, String $secret): String {
-        $header_json = json_encode($header);
-        $payload_json = json_encode($payload);
-
-        $header_base64url = $this->base64url_encode($header_json);
-        $payload_base64url = $this->base64url_encode($payload_json);
-        $signature_base64url = $this->sign($header_base64url, $payload_base64url, $secret);
-
-        $jwt = "{$header_base64url}.{$payload_base64url}.{$signature_base64url}";
-
-        return $jwt;
     }
 }
