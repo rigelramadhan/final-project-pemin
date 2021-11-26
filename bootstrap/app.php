@@ -78,7 +78,8 @@ $app->configure('app');
 
 $app->routeMiddleware([
     'userAuth' => App\Http\Middleware\UserAuthorization::class,
-    'auth' => App\Http\Middleware\Authenticate::class,
+    'adminAuth' => App\Http\Middleware\AdminAuthorization::class,
+    'auth' => App\Http\Middleware\Authorization::class,
 ]);
 
 /*

@@ -18,19 +18,15 @@ class UserController extends Controller
         //
     }
 
-    public function getUser(Request $request){
-        $user = User::all();
+    public function getUsers(Request $request){
+        $users = User::all();
 
-        if ($user){
+        if ($users){
             return response()->json([
                 'succes' => true,
                 'message'=> "All Users available",
                 'data' => [
-                    'user' => [
-                        'id' => $user->id,
-                        'name' => $user->name,
-                        'email' => $user->email
-                    ]
+                    'users' => $users
                 ]
             ], 200);
         }
@@ -50,11 +46,7 @@ class UserController extends Controller
                 'success' => true,
                 'message' => "User found.",
                 'data' => [
-                    'user' => [
-                        'id' => $user->id,
-                        'name' => $user->name,
-                        'email' => $user->email
-                    ]
+                    'user' => $user
                 ]
             ], 200);
         } else {

@@ -7,7 +7,7 @@ use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
 use Illuminate\Http\Request;
 
-class UserAuthorization
+class AdminAuthorization
 {
     /**
      * The authentication guard factory instance.
@@ -94,17 +94,14 @@ class UserAuthorization
             ], 401);
         }
 
-        if ($user->role == 'user') {
-            $searchedId = $request->route()[2]['userId'];
-            if ($user->id != $searchedId) {
-                return response()->json([
-                    'success' => false  ,
-                    'message' => 'Unauthorized access.'
-                ], 401);
-            }
-
+        if ($user->role == 'admin') {
             $request->user = $user;
             return $next($request);
+        } else {
+            return response()->json([
+                'success' => false  ,
+                'message' => 'Unauthorized access.'
+            ], 401);
         }
     }
 }

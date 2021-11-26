@@ -38,7 +38,7 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "unittest": [
-            "php artisan migrate:refresh; php artisan db:seed; php ./vendor/bin/phpunit"
+            "php artisan migrate:refresh && php artisan db:seed && php ./vendor/bin/phpunit"
         ]
     }
 }

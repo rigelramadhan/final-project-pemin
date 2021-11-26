@@ -45,9 +45,9 @@ $router->group(['middleware' => 'userAuth'], function () use ($router) {
     });
 });
 
-$router->group(['middleware' => 'auth:admin'], function () use ($router) {
+$router->group(['middleware' => 'adminAuth'], function () use ($router) {
     $router->group(['prefix' => 'users'], function () use ($router) {
-        $router->get('/', ['uses' => 'UserController@getUser']); 
+        $router->get('/', ['uses' => 'UserController@getUsers']); 
     });
 
     $router->group(['prefix' => 'books'], function () use ($router) {

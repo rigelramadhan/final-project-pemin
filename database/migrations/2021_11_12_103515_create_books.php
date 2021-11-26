@@ -22,7 +22,6 @@ class CreateBooks extends Migration
             $table->integer('year');
             $table->string('synopsis');
             $table->integer('stock');
-            $table->timestamps();
         });
     }
 
