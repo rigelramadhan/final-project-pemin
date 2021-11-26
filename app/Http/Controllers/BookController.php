@@ -24,15 +24,7 @@ class BookController extends Controller
             'success'=>true,
             'message'=>'response search book',
             'data' => [
-                'book' => [
-                        'id'=>$data->id,
-                        'title'=>$data->title,
-                        'description'=>$data->description,
-                        'author'=>$data->author,
-                        'year'=>$data->year,
-                        'synopsis'=>$data->sysnopsis,
-                        'stock'=>$data->stock,
-                ],
+                'book' => $data
             ],
         ],200);
     }
