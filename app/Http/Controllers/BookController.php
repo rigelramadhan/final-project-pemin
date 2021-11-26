@@ -44,21 +44,14 @@ class BookController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Book not available'
-            ], 400);
+            ], 404);
         }
 
         return response()->json([
             'success' => true,
             'message' => 'All books found',
             'data' => [
-                'book' => [
-                    'title' => $book->title,
-                    'description' => $book->description,
-                    'author' => $book->author,
-                    'year' => $book->year,
-                    'synopsis' => $book->synopsis,
-                    'stock' => $book->stock
-                ]
+                'book' => $book
             ]
         ], 200);
     }
@@ -72,14 +65,7 @@ class BookController extends Controller
                 'success' => true,
                 'message' => 'A book found',
                 'data' => [
-                    'book' => [
-                        'title' => $book->title,
-                        'description' => $book->description,
-                        'author' => $book->author,
-                        'year' => $book->year,
-                        'synopsis' => $book->synopsis,
-                        'stock' => $book->stock
-                    ]
+                    'book' => $book
                 ]
               ], 200);
         }else{
@@ -105,15 +91,7 @@ class BookController extends Controller
                 'success'=>true,
                 'message'=>'Book has been updated',
                 'data' => [
-                    'book' => [
-                            'id'=>$data->id,
-                            'title'=>$data->title,
-                            'description'=>$data->description,
-                            'author'=>$data->author,
-                            'year'=>$data->year,
-                            'synopsis'=>$data->sysnopsis,
-                            'stock'=>$data->stock,
-                    ],
+                    'book' => $data,
                 ],
             ],200);
         }else{
