@@ -63,8 +63,6 @@ class AuthMiddleware
                 'message' => 'Token signature not valid.'
             ], 401);
         }
-        // dd($json_payload->sub);
-        // dd($signature_base64url, $header_base64url, $payload_base64url);
         // [$id, $email] = preg_split('/\:/', $json_payload->sub);
         $user = User::/*where('id', $id)->*/where('email',$json_payload->sub /*$email*/)->first();
         if (!$user) {
