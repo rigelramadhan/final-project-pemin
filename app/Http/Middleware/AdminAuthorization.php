@@ -25,7 +25,7 @@ class AdminAuthorization
                 'message' => 'Unauthorized access.'
             ], 403);
         }
-
+ 
         return $next($request);
     }
 }
