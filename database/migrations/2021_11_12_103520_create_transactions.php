@@ -19,6 +19,7 @@ class CreateTransactions extends Migration
             $table->unsignedInteger('book_id');
             $table->unsignedInteger('user_id');
             $table->date('deadline');
+            $table->timestamps();
         });
     }
 

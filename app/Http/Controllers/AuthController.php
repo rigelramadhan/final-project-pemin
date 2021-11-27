@@ -53,18 +53,7 @@ class AuthController extends Controller
         ]);
 
         if ($register) {
-            $token = JWTProvider::jwt(
-                [
-                    "alg" => "HS256",
-                    "typ" => "JWT"
-                ],
-                [
-                    "sub" => "{$register->id}:{$register->email}",
-                    "name" => $register->name,
-                    "iat" => time()
-                ],
-                "Secret"
-            );
+            $token = JWTProvider::jwt($register);
 
             $register->token = $token;
             $register->save();
@@ -103,18 +92,7 @@ class AuthController extends Controller
 
         if ($user) {
             if (Hash::check($password, $user->password)) {
-                $token = JWTProvider::jwt(
-                    [
-                        "alg" => "HS256",
-                        "typ" => "JWT"
-                    ],
-                    [
-                        "sub" => "{$user->id}:{$user->email}",
-                        "name" => $user->name,
-                        "iat" => time()
-                    ],
-                    "SECRET"
-                );
+                $token = JWTProvider::jwt($user);
 
                 $user->token = $token;
                 $user->save();

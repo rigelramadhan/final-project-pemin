@@ -4,8 +4,12 @@ namespace App\Http\Middleware;
 
 use App\Models\User;
 use Closure;
+use Exception;
+use Firebase\JWT\ExpiredException;
+use Firebase\JWT\JWT;
 use Illuminate\Contracts\Auth\Factory as Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class Authenticate
 {
@@ -37,61 +41,35 @@ class Authenticate
      */
     public function handle(Request $request, Closure $next, $guard = null)
     {
-        $token = $request->header('authorization') ?? $request->query('authorization');
-        if (!$token) {
+        $header = $request->header('authorization') ?? $request->query('authorization');
+        if (!$header) {
             return response()->json([
                 'success' => false  ,
                 'message' => 'Token required.'
             ], 401);
         }
 
-        [
-            $header_base64url,
-            $payload_base64url,
-            $signature_base64url
-        ] = preg_split('/\./', $token);
-
-        $header = JWTProvider::base64url_decode($header_base64url);
-        $json_header = json_decode($header);
-
-        if (!$json_header->alg || $json_header->alg !== 'HS256') {
+        try {
+            $payload = JWT::decode($header, env('JWT_KEY', 'secret'), ['HS256']);
+        } catch(ExpiredException $e) {
             return response()->json([
-                'success' => false  ,
-                'message' => 'Token algorithm not valid.'
+                'success' => false,
+                'message' => 'Token expired.'
             ], 401);
+        } catch(Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
         }
 
-        if (!$json_header->typ || $json_header->typ !== 'JWT') {
-            return response()->json([
-                'success' => false  ,
-                'message' => 'Token type not valid.'
-            ], 401);
-        }
+        $user = User::where('email', $payload->sub)->first();
 
-        $payload = JWTProvider::base64url_decode($payload_base64url);
-        $json_payload = json_decode($payload);
-        if (!$json_payload->sub) {
-            return response()->json([
-                'success' => false  ,
-                'message' => 'Token body not valid.'
-            ], 401);
-        }
-
-        $verified = JWTProvider::verify($signature_base64url, $header_base64url, $payload_base64url, 'SECRET');
-        if (!$verified) {
-            return response()->json([
-                'success' => false  ,
-                'message' => 'Token signature not valid.'
-            ], 401);
-        }
-
-        [$id, $email] = preg_split('/\:/', $json_payload->sub);
-        $user = User::where('id', $id)->where('email', $email)->first();
         if (!$user) {
             return response()->json([
-                'success' => false  ,
-                'message' => 'Token not valid.'
-            ], 401);
+                'success' => false,
+                'message' => 'User not found.'
+            ], 404);
         }
 
         $request->user = $user;
