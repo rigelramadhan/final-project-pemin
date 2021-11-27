@@ -18,10 +18,9 @@ class UserController extends Controller
         //
     }
 
-    public function getUsers() {
+    public function getUsers(){
         $users = User::all();
-
-        if ($users) {
+        if ($users){
             return response()->json([
                 'success' => true,
                 'message'=> "All Users available",
@@ -29,7 +28,8 @@ class UserController extends Controller
                     'users' => $users
                 ]
             ], 200);
-        } else{
+        }
+        else{
             return response()->json([
                 'success' => false,
                 'message'=> "User not available"
@@ -122,6 +122,4 @@ class UserController extends Controller
             'message' => 'User has been deleted'
         ], 200);
     }
-
-
 }
