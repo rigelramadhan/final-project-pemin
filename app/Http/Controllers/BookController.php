@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 
 class BookController extends Controller
 {
@@ -18,7 +20,21 @@ class BookController extends Controller
     }
 
     public function createBook(Request $request){
-        // belum lengkap
+        $validation = Validator::make($request->all(),[
+            'title' => 'required',
+            'description' => 'required',
+            'author' => 'required',
+            'year' => 'required',
+            'synopsis' => 'required',
+            'stock' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Fields cannot be empty.'
+            ], 400);
+        }
         $data = Book::create($request->all());
         return response()->json([
             'success'=>true,
@@ -26,11 +42,10 @@ class BookController extends Controller
             'data' => [
                 'book' => $data
             ],
-        ],200);
+        ],201);
     }
 
     public function getBooks() {
-        // belum lengkap
         $book = Book::all();
         if ($book->isEmpty()) {
             return response()->json([
@@ -43,13 +58,12 @@ class BookController extends Controller
             'success' => true,
             'message' => 'All books found',
             'data' => [
-                'book' => $book
+                'books' => $book
             ]
         ], 200);
     }
 
     public function getBookById($bookId) {
-        // belum lengkap
         $book = Book::find($bookId);
 
         if($book){
@@ -68,22 +82,26 @@ class BookController extends Controller
         }  
     }
 
-    public function updateBook(Request $request, $id){
-        // belum lengkap
-        $data= Book::where('id',$id)->update([
-            'title'=>$request->input('title'),
-            'description'=>$request->input('description'),
-            'author'=>$request->input('author'),
-            'year'=>$request->input('year'),
-            'synopsis'=>$request->input('synopsis'),
-            'stock'=>$request->input('stock'),
-        ]);
+    public function updateBook(Request $request, $bookId){
+        if(!Book::where('id',$bookId)){
+            return response()->json([
+                'success' => false,
+                'message' => 'Book not found',
+              ], 404);
+        };
+        if($request->user->role!=='admin'){
+            return response()->json([
+                'success' => false,
+                'message' => 'Book cannot update',
+              ], 403);
+        };
+        $data= Book::where('id',$bookId)->update($request->all());
         if($data){
             return response()->json([
                 'success'=>true,
                 'message'=>'Book has been updated',
                 'data' => [
-                    'book' => $data,
+                    'book' => Book::where('id',$bookId)->first()
                 ],
             ],200);
         }else{
@@ -94,9 +112,8 @@ class BookController extends Controller
         }
     }
 
-    public function deleteBook($id){
-        // belum lengkap
-        $data=Book::find($id);
+    public function deleteBook($bookId){
+        $data=Book::find($bookId);
         if($data){
             $data->delete();
             return response()->json([
