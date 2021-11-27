@@ -49,10 +49,8 @@ class Authenticate
             ], 401);
         }
 
-        $token = Str::of($header)->ltrim('Bearer')->trim();
-
         try {
-            $payload = JWT::decode($token, env('JWT_KEY', 'secret'), ['HS256']);
+            $payload = JWT::decode($header, env('JWT_KEY', 'secret'), ['HS256']);
         } catch(ExpiredException $e) {
             return response()->json([
                 'success' => false,
