@@ -26,8 +26,8 @@ class TransactionController extends Controller
         $deadline = Carbon::now()->addWeek()->toDateString();
         $validation = Validator::make($request->all(), [
             'book_id' => 'required',
-            'user_id' => 'required',
-            'deadline' => 'required'
+            // 'user_id' => 'required',
+            // 'deadline' => 'required'
         ]);
 
         if ($validation->fails()) {
@@ -36,13 +36,20 @@ class TransactionController extends Controller
                 'message' => 'Fields cannot be empty.'
             ], 400);
         }
-
+        $book = Book::find($request->book_id);
+        if(!$book){
+            return response()->json([
+                'success' => false,
+                'message' => 'Book not found',
+            ], 400);
+        };
+        
         $data = [
             'book_id' => $request->book_id,
             'user_id' => $request->user->id,
             'deadline' => $deadline
         ];
-
+        
         $transaction = Transaction::create($data);
 
         return response()->json([
@@ -57,7 +64,6 @@ class TransactionController extends Controller
     public function getTransaction(Request $request) {
         // belum lengkap
         $user = $request->user;
-
         if($user->role == 'admin'){
             $data = Transaction::all();
             return response()->json([
