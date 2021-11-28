@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use App\Models\Transaction;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class TransactionController extends Controller
 {
@@ -20,30 +23,40 @@ class TransactionController extends Controller
 
     public function createTransaction(Request $request){
         // belum lengkap
-        $data = Transaction::create($request->all());
+        $deadline = Carbon::now()->addWeek()->toDateString();
+        $validation = Validator::make($request->all(), [
+            'book_id' => 'required',
+            'user_id' => 'required',
+            'deadline' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Fields cannot be empty.'
+            ], 400);
+        }
+
+        $data = [
+            'book_id' => $request->book_id,
+            'user_id' => $request->user->id,
+            'deadline' => $deadline
+        ];
+
+        $transaction = Transaction::create($data);
+
         return response()->json([
             'success'=>true,
             'message'=>'transaction created',
             'data' => [
-                'Transaction' => [
-                        'id'=>$data->id,
-                        'user' => [
-                            'name' => $data->name,
-                            'email' => $data->email
-                        ],'book' => [
-                            'title'=>$data->title,
-                            'author'=>$data->author,
-                        ],'deadline'=>$data->deadline,
-                        'created_at'=>$data->created_at,
-                        'update_at'=>$data->update_at
-                ],
+                'transaction' => $this->transactionFormat($transaction)
             ],
-        ],200);
+        ],201);
     }
 
-    public function getTransaction($userId) {
+    public function getTransaction(Request $request) {
         // belum lengkap
-        $user = User::find($userId);
+        $user = $request->user;
 
         if($user->role == 'admin'){
             $data = Transaction::all();
@@ -51,39 +64,35 @@ class TransactionController extends Controller
                 'success' => true,
                 'message' => 'All Transaction',
                 'data' => [
-                    'Transaction' => [
-                            'id'=>$data->id,
-                            'user' => [
-                                'name' => $data->name,
-                                'email' => $data->email
-                            ],'book' => [
-                                'title'=>$data->title,
-                                'author'=>$data->author,
-                            ],'deadline'=>$data->deadline,
-                            'created_at'=>$data->created_at,
-                            'update_at'=>$data->update_at
-                    ],
+                    'transactions' => $this->transactionArrayFormat($data)
                 ],
             ], 200);
+        } else {
+            $data = Transaction::where('user_id', $user->id)->get();
+            if ($data) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'All Transaction',
+                    'data' => [
+                        'transactions' => $this->transactionArrayFormat($data)
+                    ],
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaction not found'
+                ], 404);
+            }
+
         }
+
         if(!$user){
             $data = Transaction::find($user->Id);
             return response()->json([
                 'success' => true,
                 'message' => 'Transaction for user id: '+$data->id,
                 'data' => [
-                    'Transaction' => [
-                            'id'=>$data->id,
-                            'user' => [
-                                'name' => $data->name,
-                                'email' => $data->email
-                            ],'book' => [
-                                'title'=>$data->title,
-                                'author'=>$data->author,
-                            ],'deadline'=>$data->deadline,
-                            'created_at'=>$data->created_at,
-                            'update_at'=>$data->update_at
-                    ],
+                    'transactions' => $data,
                 ],
             ], 200);
         }
@@ -96,18 +105,7 @@ class TransactionController extends Controller
                 'success' => true,
                 'message' => 'Transaction found',
                 'data' => [
-                    'Transaction' => [
-                            'id'=>$data->id,
-                            'user' => [
-                                'name' => $data->name,
-                                'email' => $data->email
-                            ],'book' => [
-                                'title'=>$data->title,
-                                'author'=>$data->author,
-                            ],'deadline'=>$data->deadline,
-                            'created_at'=>$data->created_at,
-                            'update_at'=>$data->update_at
-                    ],
+                    'transaction' => $this->transactionFormat($data)
                 ],
             ], 200);
         }else{
@@ -118,7 +116,18 @@ class TransactionController extends Controller
         }
     }
 
-    public function updateTransaction($transactionId){
+    public function updateTransaction(Request $request, $transactionId){
+        $validation = Validator::make($request->all(), [
+            'deadline' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Fields cannot be empty.'
+            ], 400);
+        }
+
         $data = Transaction::where('id',$transactionId)->update([
             'deadline'=>null
         ]);
@@ -127,18 +136,7 @@ class TransactionController extends Controller
                 'success'=>true,
                 'message'=>'Transaction has been updated',
                 'data' => [
-                    'Transaction' => [
-                            'id'=>$data->id,
-                            'user' => [
-                                'name' => $data->name,
-                                'email' => $data->email
-                            ],'book' => [
-                                'title'=>$data->title,
-                                'author'=>$data->author,
-                            ],'deadline'=>$data->deadline,
-                            'created_at'=>$data->created_at,
-                            'update_at'=>$data->update_at
-                    ],
+                    'transactions' => $this->transactionFormat($data)
                 ],
             ],200);
         }else{
@@ -150,4 +148,34 @@ class TransactionController extends Controller
     }
     
     // TODO: Create transaction logic
+    private function transactionFormat($transaction) {
+        $user = User::find($transaction->user_id);
+        $book = Book::find($transaction->book_id);
+        return [
+            'user' => [
+                'name' => $user->name,
+                'email' => $user->email
+            ],
+            // 'book' => $book,
+            'book' => [
+                'title' => $book->title,
+                'author' => $book->author,
+                'description' => $book->description,
+                'synopsis' => $book->synopsis
+            ],
+            'deadline' => $transaction->deadline,
+            'created_at' => $transaction->created_at,
+            'updated_at' => $transaction->updated_at
+        ];
+    }
+
+    private function transactionArrayFormat($transactions) {
+        $data = [];
+
+        foreach($transactions as $transaction) {
+            array_push($data, $this->transactionFormat($transaction));
+        }
+
+        return $data;
+    }
 }
