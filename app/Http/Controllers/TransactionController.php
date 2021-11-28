@@ -123,17 +123,6 @@ class TransactionController extends Controller
     }
 
     public function updateTransaction(Request $request, $transactionId){
-        $validation = Validator::make($request->all(), [
-            'deadline' => 'required'
-        ]);
-
-        if ($validation->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Fields cannot be empty.'
-            ], 400);
-        }
-
         $data = Transaction::where('id',$transactionId)->update([
             'deadline'=>null
         ]);
